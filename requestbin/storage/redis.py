@@ -23,6 +23,9 @@ class RedisStorage():
         return '{}-requests'.format(self.prefix)
 
     def create_bin(self, private=False):
+        if(len(self.redis.keys("{}_*".format(self.prefix))) >= 10):
+            self.redis.delete(self.redis.keys("{}_*".format(self.prefix))[-1])
+
         bin = Bin(private)
         key = self._key(bin.name)
         self.redis.set(key, bin.dump())
